@@ -116,6 +116,17 @@ This project uses **Jest** for unit and integration testing.
 1. Tests are automatically run via GitHub Actions whenever changes are pushed to the repository or a pull request is created.
 2. The workflow builds the Docker image and runs the tests inside a containerized environment.
 
+#### Locally simulating a run through GitHub Actions with `act`
+
+Sometimes, GitHub Actions don't do what we expect. `act` allows us to locally simulate a workflow without pushing code to GitHub ad nauseum.
+
+1. Install `act` ([GitHub repository](https://github.com/nektos/act)) to simulate GitHub Actions workflows locally.
+2. Run the workflow:
+   ```bash
+   act -j test
+   ```
+3. Ensure Docker is running and `act` is configured correctly (e.g., specifying the container architecture if using an Apple M-series chip).
+
 ---
 
 ## Development Workflow

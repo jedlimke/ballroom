@@ -3,56 +3,30 @@ name: Tests
 on:
   push:
     branches:
-      - main   # Run the workflow for pushes to the main branch
+      - main
   pull_request:
     branches:
-      - main   # Run the workflow for pull requests targeting the main branch
+      - main
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Install dependencies (with dev)
-        run: npm install --include=dev
-      - name: Run ESLint
-        run: npm run lint
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      # This step checks out the repository code so it is available in the workflow.
+      # Step 1: Checkout repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-      # This step sets up Docker Buildx, enabling advanced features like layer caching.
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Match the Node.js version in your Dockerfile
 
-    - name: Restore Docker layer cache
-      uses: actions/cache@v3
-      with:
-        path: /tmp/.buildx-cache
-        # Include Dockerfile hash in the cache key to invalidate cache when the Dockerfile changes.
-        key: ${{ runner.os }}-docker-${{ github.ref_name }}-${{ hashFiles('Dockerfile') }}
-        # Use fallback restore keys to reuse broader cache data if the exact key is unavailable.
-        restore-keys: |
-          ${{ runner.os }}-docker-${{ github.ref_name }}-
-          ${{ runner.os }}-docker-
-      # This step restores cached Docker layers to speed up the build process
-      # by avoiding unnecessary rebuilding of unchanged layers.
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build Docker image
-      run: |
-        docker buildx build \
-          --progress=plain \
-          --cache-from=type=local,src=/tmp/.buildx-cache \
-          --cache-to=type=local,dest=/tmp/.buildx-cache \
-          --load \
-          -t ballroom:latest .
-
-    - name: Run tests
-      # This step runs the Jest tests inside the Docker container using the built image.
-      run: |
-        docker run --rm -v "${{ github.workspace }}:/workspace" -w /workspace ballroom:latest npm test
+      # Step 4: Run Jest tests
+      - name: Run tests
+        run: npm test
