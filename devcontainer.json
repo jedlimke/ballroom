@@ -1,0 +1,27 @@
+{
+    "name": "TypeScript Dev Container",
+    "image": "node:18-bullseye-slim", 
+    "features": {
+      "ghcr.io/devcontainers/features/node:1": {
+        "version": "18"
+      }
+    },
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "terminal.integrated.defaultProfile.linux": "/bin/bash",
+          "typescript.tsdk": "/workspace/node_modules/typescript/lib"
+        },
+        "extensions": [
+          "dbaeumer.vscode-eslint",
+          "esbenp.prettier-vscode"
+        ]
+      }
+    },
+    "postCreateCommand": "npm install",
+    "remoteUser": "node",
+    "mounts": [
+      "source=${localWorkspaceFolder}/node_modules,target=/workspace/node_modules,type=bind"
+    ]
+  }
+  

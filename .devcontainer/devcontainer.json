@@ -1,0 +1,44 @@
+{
+	"name": "Existing Docker Compose (Extend)",
+  
+	// Referencing docker-compose.yml in the root folder
+	"dockerComposeFile": [
+	  "../docker-compose.yml"
+	],
+  
+	// Specify the service for the dev container
+	"service": "app",
+  
+	// Set the folder to open as the workspace in VS Code
+	"workspaceFolder": "/workspace",
+  
+	// Add useful features or tools to the container
+	"features": {
+	  "ghcr.io/devcontainers/features/node:1": {
+		"version": "18"
+	  }
+	},
+  
+	// Run npm install after the container is created
+	"postCreateCommand": "npm install",
+  
+	// Forward ports from the container to the host machine
+	"forwardPorts": [3000],
+  
+	// Customize VS Code settings and extensions inside the container
+	"customizations": {
+	  "vscode": {
+		"settings": {
+		  "typescript.tsdk": "/workspace/node_modules/typescript/lib"
+		},
+		"extensions": [
+		  "dbaeumer.vscode-eslint",    // Linting
+		  "esbenp.prettier-vscode"     // Code formatting
+		]
+	  }
+	},
+  
+	// Ensure the container uses the Node.js user
+	"remoteUser": "node"
+  }
+  
