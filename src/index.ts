@@ -1,19 +1,19 @@
 import express from 'express';
-import { calculateDifference } from './api/subtract';
+import { calculatePartners } from './api/calculate-partners';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-app.post('/subtract', (req, res) => {
-  const { minuend, subtrahend } = req.body;
-
+app.post('/calculate-partners', (req, res) => {
   try {
-    const difference = calculateDifference(minuend, subtrahend);
-    res.status(200).json({ difference });
+    const input = req.body;  // No need to type explicitly unless required
+    const averagePartners = calculatePartners(input);
+    res.status(200).json({ average_dance_partners: averagePartners });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    // If there's an error, return a 422 Unprocessable Entity status with a descriptive message
+    res.status(422).json({ error: error.message });
   }
 });
 
