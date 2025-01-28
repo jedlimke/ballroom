@@ -1,7 +1,7 @@
 # Ballroom Microservice
 [![Tests](https://github.com/jedlimke/ballroom/actions/workflows/tests.yml/badge.svg)](https://github.com/jedlimke/ballroom/actions/workflows/tests.yml)
 
-This project demonstrates a basic API for calculating differences between numbers. The environment is fully Dockerized, enabling development and testing within a consistent containerized setup.
+This project demonstrates a basic API for calculating dance partners based on available leaders, followers, and their respective dance styles. The environment is fully Dockerized, enabling development and testing within a consistent containerized setup.
 
 ## Getting Started
 
@@ -76,17 +76,27 @@ For seamless development with full IDE support, this project is configured to us
 
 2. Access the API:
    - By default, the server listens on **port 3000**.
-   - Use POST /subtract to send a request. Example payload:
+   - Use POST /calculate-partners to send a request. Example payload:
      ```json
      {
-       "minuend": 30,
-       "subtrahend": 2
+       "total_leaders": 2,
+       "total_followers": 2,
+       "dance_styles": ["Salsa", "Tango"],
+       "leader_knowledge": {
+         "1": ["Tango", "Salsa", "Charleston"],
+         "2": ["Salsa", "Waltz", "Two-step"]
+       },
+       "follower_knowledge": {
+         "A": ["Two-step"],
+         "B": ["Tango", "Salsa", "Waltz"]
+       },
+       "dance_duration_minutes": 60
      }
      ```
      Response:
      ```json
      {
-       "difference": 28
+       "average_dance_partners": 1
      }
      ```
 

@@ -1,5 +1,6 @@
 import express from 'express';
 import { calculatePartners } from './api/calculate-partners';
+import { ValidationError } from './error/ValidationError';
 
 const app = express();
 const PORT = 3000;
@@ -8,12 +9,15 @@ app.use(express.json());
 
 app.post('/calculate-partners', (req, res) => {
   try {
-    const input = req.body;  // No need to type explicitly unless required
+    const input = req.body;
     const averagePartners = calculatePartners(input);
     res.status(200).json({ average_dance_partners: averagePartners });
   } catch (error: any) {
-    // If there's an error, return a 422 Unprocessable Entity status with a descriptive message
-    res.status(422).json({ error: error.message });
+    if (error instanceof ValidationError) {
+      res.status(error.statusCode).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'An unexpected error occurred' });
+    }
   }
 });
 
