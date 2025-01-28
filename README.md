@@ -15,22 +15,23 @@ Although the project currently consists of a single service, Docker Compose simp
 ### Setup Instructions
 
 1. **Build and Start the Docker Container**:
-   Stay attached:
-   ```bash
-   docker-compose up --build
-   ```
-   OR do NOT stay attached:
-   ```bash
-   docker-compose up -d --build
-   ```
-   This will:
-   - Build a Node.js-based development container.
-   - Map the project directory into the container under `/app`.
-   - Install dependencies inside the container.
+   - Stay attached:
+      ```bash
+      docker-compose up --build
+      ```
+   - OR do NOT stay attached:
+      ```bash
+      docker-compose up -d --build
+      ```
+      This will:
+      - Build a Node.js-based development container.
+      - Map the project directory into the container under `/workspace`.
+      - Install dependencies inside the container.
 
 2. **Access the Running Container**:
    ```bash
-   docker exec -it ballroom_dev bash
+   docker ps -a # list running containers
+   docker exec -it <container-name, e.g. ballroom-app-1> bash
    ```
 
 3. **Stop the Container**:
@@ -69,14 +70,14 @@ For seamless development with full IDE support, this project is configured to us
 
 ### Start the Server
 
-1. Ensure the container is running:
+1. Ensure the container is running, and detatched:
    ```bash
-   docker-compose up --build
+   docker-compose up -d
    ```
 
 2. Access the API:
    - By default, the server listens on **port 3000**.
-   - Use POST /calculate-partners to send a request. Example payload:
+   - `POST` to `/calculate-partners` to send a request. Example payload:
      ```json
      {
        "total_leaders": 2,
@@ -100,7 +101,15 @@ For seamless development with full IDE support, this project is configured to us
      }
      ```
 
-3. Logs for the application can be seen in the terminal running `docker-compose`.
+3. Logs for the application can be seen in the terminal running `docker-compose logs -f ballroom-app`.
+
+4. Stop & kill the application with `docker-compose down`.
+   - In the event the above doesn't work:
+      ```bash
+      docker ps -a # List all containers
+      docker stop --force <container_name_or_id> # Stop it
+      docker rm --force <container_name_or_id> # Remove it
+      ```
 
 ---
 
@@ -112,7 +121,8 @@ This project uses **Jest** for unit and integration testing.
 
 1. **Access the Running Container**:
    ```bash
-   docker exec -it ballroom_dev bash
+   docker ps -a # list running containers
+   docker exec -it <container-name, e.g. ballroom-app-1> bash
    ```
 
 2. **Run Tests**:
@@ -136,14 +146,3 @@ Sometimes, GitHub Actions don't do what we expect. `act` allows us to locally si
    act -j test
    ```
 3. Ensure Docker is running and `act` is configured correctly (e.g., specifying the container architecture if using an Apple M-series chip).
-
----
-
-## Development Workflow
-
-1. All development happens inside the container, with local changes automatically reflected via hot reloading.
-2. **Scripts**:
-   - Start the app: `npm run dev`
-   - Run tests: `npm test`
-   - Lint the code: `npm run lint`
-   - Build the app: `npm run build`
